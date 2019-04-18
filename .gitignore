@@ -1,0 +1,5 @@
+# ignore saved models
+*.ckpt
+
+# ignore binary MNIST dataset
+*.amat
