@@ -83,20 +83,20 @@ def calculate_fid_score(sample_feature_iterator,
     sample_mean = np.mean(sample_features, axis=0, keepdims=True) # (1, 512)
     testset_mean = np.mean(testset_features, axis=0, keepdims=True) # (1, 512)
 
-    sample_cov = np.cov(sample_features, rowvar=False) # (512, 512)
-    testset_cov = np.cov(testset_features, rowvar=False) # (512, 512)
+    sample_cov = np.cov(sample_features - sample_mean, rowvar=False) # (512, 512), subtracted mean for numerical stability
+    testset_cov = np.cov(testset_features - testset_mean, rowvar=False) # (512, 512), subtracted mean for numerical stability
 
-    mean_diff = np.linalg.norm(sample_mean - testset_mean) **2
+    mean_diff = np.linalg.norm(testset_mean - sample_mean) **2
 
     num_features = sample_cov.shape[0]
-    epsilon_list = [1e-1, 1e-3, 1e-5, 1e-7, 1e-9, 1e-12, 1e-15, 0]
+    epsilon_list = [1, 1e-1, 1e-3, 1e-5, 1e-7, 1e-9, 1e-12, 0]
     dist = None
     for i, epsilon in enumerate(epsilon_list):
-        cov_diff = np.trace(sample_cov + testset_cov - (2 * sqrtm(np.dot(sample_cov, testset_cov) + (np.eye(num_features) * epsilon))))
+        cov_diff = np.trace(testset_cov + sample_cov - (2 * sqrtm(np.dot(testset_cov, sample_cov) + (np.eye(num_features) * epsilon))))
         if np.isreal(cov_diff):
             dist = mean_diff + cov_diff
         else:
-            if dist is None: raise ValueError('Epsilon choices not large enough')
+            if i == 0: raise ValueError('Epsilon choices not large enough')
             print('Used epsilon: {:.1E}'.format(epsilon_list[i-1]))
             break
     return dist
