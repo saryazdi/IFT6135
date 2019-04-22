@@ -30,7 +30,7 @@ def get_SVHN_dataset(data_dir, validation_split=0.2, seed=None, zero_mean=True, 
 	'''
 	assert validation_split < 1
 	if seed is not None: np.random.seed(seed)
-	X_train_moments = [0, 1]
+	X_train_max = None
 
 	try:
 		print('Generating numpy dataset from existing .mat files in ' + data_dir)
@@ -55,19 +55,18 @@ def get_SVHN_dataset(data_dir, validation_split=0.2, seed=None, zero_mean=True, 
 	X_val = train_dataset[ind[:len_val]]
 	y_val = train_labels[ind[:len_val]]
 
-	if zero_mean:
-		# zero-mean the data with training set mean
-		X_train_mean = np.mean(X_train)
-		X_train -= X_train_mean
-		X_val -= X_train_mean
-		X_test -= X_train_mean
-		X_train_moments[0] = X_train_mean
-
 	if normalize:
-		# Normalize the data with training set max(abs)
-		X_train_max = np.max(abs(X_train))
+		# Normalize the data by 255
+		X_train_max = 255
 		X_train /= X_train_max
 		X_val /= X_train_max
 		X_test /= X_train_max
-		X_train_moments[1] = X_train_max
-	return X_train, y_train, X_val, y_val, X_test, y_test, X_train_moments
+
+	if zero_mean:
+		# zero-mean the data and scale so its [-1, 1]
+		X_train = (X_train - 0.5) * 2
+		X_val = (X_val - 0.5) * 2
+		X_test = (X_test - 0.5) * 2
+
+
+	return X_train, y_train, X_val, y_val, X_test, y_test, X_train_max

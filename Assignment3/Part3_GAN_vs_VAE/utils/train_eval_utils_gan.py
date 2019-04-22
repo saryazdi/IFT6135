@@ -115,7 +115,7 @@ def train_model(discriminator, generator, optimizer_d, optimizer_g,
 
         print("Iteration: {}, Loss generator: {}, Loss discriminator {}".format(it,loss_gen.cpu().data.numpy().reshape(1,)[0],loss_real.cpu().data.numpy().reshape(1,)[0]-loss_fake.cpu().data.numpy().reshape(1,)[0]))
 
-
+        
         if (it) % 100 == 0:
             eps = torch.randn(10, 100).to(device)
             generator.eval()

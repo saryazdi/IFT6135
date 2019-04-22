@@ -5,19 +5,18 @@ class Generator(nn.Module):
 	def __init__(self, num_latent):
 		super(Generator, self).__init__()
 		self.num_latent = num_latent
-		
 
 		self.decoder = nn.Sequential(
-		nn.ConvTranspose2d(100, 512, 4, stride=1, padding=0),
-		nn.BatchNorm2d(num_features=512),
-		nn.ReLU(inplace=True),
-		nn.ConvTranspose2d(512, 256, 4, stride=2, padding=1),
-		nn.BatchNorm2d(num_features=256),
-		nn.ReLU(inplace=True),
-		nn.ConvTranspose2d(256, 128, 4, stride=2, padding=1),
-		nn.BatchNorm2d(num_features=128),
-		nn.ReLU(inplace=True),
-		nn.ConvTranspose2d(128, 3, 4, stride=2, padding=1),
+		nn.ConvTranspose2d(100, 1024, 4, stride=1, padding=0),
+        nn.BatchNorm2d(num_features=1024),
+        nn.ReLU(inplace=True),
+        nn.ConvTranspose2d(1024, 512, 4, stride=2, padding=1),
+        nn.BatchNorm2d(num_features=512),
+        nn.ReLU(inplace=True),
+        nn.ConvTranspose2d(512, 256, 4, stride=2, padding=1),
+        nn.BatchNorm2d(num_features=256),
+        nn.ReLU(inplace=True),
+        nn.ConvTranspose2d(256, 3, 4, stride=2, padding=1),
 		nn.Tanh())
 
 	
