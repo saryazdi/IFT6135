@@ -90,16 +90,15 @@ def calculate_fid_score(sample_feature_iterator,
 
     num_features = sample_cov.shape[0]
     epsilon_list = [1e-1, 1e-3, 1e-5, 1e-7, 1e-9, 1e-12, 1e-15, 0]
-    # dist_list = {}
     dist = None
     for i, epsilon in enumerate(epsilon_list):
         cov_diff = np.trace(sample_cov + testset_cov - (2 * sqrtm(np.dot(sample_cov, testset_cov) + (np.eye(num_features) * epsilon))))
         if np.isreal(cov_diff):
             dist = mean_diff + cov_diff
         else:
+            if dist is None: raise ValueError('Epsilon choices not large enough')
             print('Used epsilon: {:.1E}'.format(epsilon_list[i-1]))
             break
-        # dist_list[epsilon] = dist
     return dist
 
 if __name__ == "__main__":
