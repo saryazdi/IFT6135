@@ -1,5 +1,6 @@
 # ignore saved models
 *.ckpt
 
-# ignore binary MNIST dataset
+# ignore datasets
 *.amat
+*.mat
